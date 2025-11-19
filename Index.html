@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NEET Quiz — Some Basic Principles & Techniques (23 Qs)</title>
+  <style>
+    :root{
+      --bg: #0f172a;
+      --card: #0b1220;
+      --accent: #10b981;
+      --muted: #94a3b8;
+      --text: #e6eef8;
+      --danger: #ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#071026 0%, #0f172a 100%);
+      color:var(--text);
+      padding:24px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .container{
+      max-width:900px;
+      margin:0 auto;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    header h1{
+      font-size:20px;
+      margin:0;
+      line-height:1.1;
+    }
+    header p{ margin:0; color:var(--muted); font-size:13px; }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:18px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      margin-bottom:14px;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .q-header{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .q-no{
+      background:#071833;
+      color:var(--muted);
+      padding:6px 9px;
+      border-radius:7px;
+      font-weight:600;
+      font-size:13px;
+      min-width:44px;
+      text-align:center;
+    }
+    .q-text{ font-size:15px; }
+    .options{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:12px;
+    }
+    .opt{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.02);
+      cursor:pointer;
+      transition:all .12s ease;
+      user-select:none;
+    }
+    .opt:hover{ transform:translateY(-3px); box-shadow:0 6px 14px rgba(2,6,23,0.5) }
+    .opt.locked{ opacity:0.65; cursor:default; transform:none; box-shadow:none; }
+    .opt .label{
+      width:26px;
+      height:26px;
+      min-width:26px;
+      border-radius:8px;
+      display:inline-grid;
+      place-items:center;
+      background:rgba(255,255,255,0.03);
+      color:var(--muted);
+      font-weight:700;
+    }
+    .opt .txt{ flex:1; color:var(--text); font-size:14px }
+    .opt.correct{
+      border-color:rgba(16,185,129,0.25);
+      background:linear-gradient(90deg, rgba(16,185,129,0.06), rgba(16,185,129,0.02));
+      box-shadow:0 6px 18px rgba(16,185,129,0.06);
+    }
+    .opt.wrong{
+      border-color:rgba(239,68,68,0.16);
+      background:linear-gradient(90deg, rgba(239,68,68,0.03), rgba(239,68,68,0.01));
+      box-shadow:0 6px 18px rgba(239,68,68,0.03);
+    }
+    .tick{
+      width:28px;
+      height:28px;
+      border-radius:8px;
+      display:inline-grid;
+      place-items:center;
+      font-weight:700;
+      font-size:14px;
+    }
+    .tick.ok{ background:var(--accent); color:#012117; }
+    .tick.no{ background:var(--danger); color:#2a0b0b; }
+    .footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:12px;
+    }
+    .scorebox{
+      padding:10px 12px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.03);
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .btn{
+      padding:10px 12px;
+      border-radius:10px;
+      background:var(--accent);
+      color:#012117;
+      font-weight:700;
+      border:none;
+      cursor:pointer;
+    }
+    .btn.ghost{
+      background:transparent;
+      color:var(--text);
+      border:1px solid rgba(255,255,255,0.04);
+    }
+    .result{
+      text-align:center;
+      margin-top:18px;
+      padding:12px;
+      border-radius:10px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .small{ font-size:13px; color:var(--muted) }
+    @media (max-width:640px){
+      header{ flex-direction:column; align-items:flex-start; gap:6px }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>NEET Quiz — Some Basic Principles & Techniques (23 Qs)</h1>
+        <p class="small">Select the correct option. Correct choice gives +1 score and locks the question.</p>
+      </div>
+      <div class="scorebox">
+        <div class="small">Score:</div>
+        <div id="score" style="font-weight:800; min-width:28px; text-align:center">0</div>
+        <div class="small">/ 23</div>
+      </div>
+    </header>
+
+    <main id="quiz"></main>
+
+    <div class="card footer" style="align-items:center;">
+      <div class="small">Questions answered: <span id="answered">0</span> / 23</div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button class="btn ghost" id="show-answers">Show Correct Answers</button>
+        <button class="btn" id="reset">Reset Quiz</button>
+      </div>
+    </div>
+
+    <div id="final" class="result" aria-live="polite" style="display:none;">
+      <h2 id="final-text">Final Score</h2>
+      <p class="small" id="final-sub"></p>
+    </div>
+  </div>
+
+  <script>
+    // Quiz data: 23 questions from the earlier list with 4 options each and correct index (0-based)
+    const quizData = [
+      // 1
+      {
+        q: "1. The IUPAC name of CH₃–CH₂–CH(CH₃)–COOH is:",
+        opts: ["3-methylbutanoic acid","2-methylbutanoic acid","3-methylpentanoic acid","2-methylpentanoic acid"],
+        correct: 1
+      },
+      // 2
+      {
+        q: "2. The correct IUPAC name of CH₃–CH₂–O–CH₂–CH₃ is:",
+        opts: ["Ethyl methyl ether","Methoxyethane","Ethoxyethane","1-methoxypropane"],
+        correct: 2
+      },
+      // 3
+      {
+        q: "3. Identify the parent chain in a branched alkane containing 6 carbons with one methyl substituent.",
+        opts: ["Pentane","Hexane","Butane","Heptane"],
+        correct: 1
+      },
+      // 4
+      {
+        q: "4. How many structural isomers are possible for C₅H₁₂?",
+        opts: ["2","3","4","5"],
+        correct: 1
+      },
+      // 5
+      {
+        q: "5. Which one of the following shows geometrical (cis–trans) isomerism?",
+        opts: ["1-butene","2-butene","2-methylpropene","Methane"],
+        correct: 1
+      },
+      // 6
+      {
+        q: "6. Number of optical isomers possible for lactic acid is:",
+        opts: ["1","2","3","4"],
+        correct: 1
+      },
+      // 7
+      {
+        q: "7. Which method is used to purify naphthalene?",
+        opts: ["Distillation","Sublimation","Steam distillation","Differential extraction"],
+        correct: 1
+      },
+      // 8
+      {
+        q: "8. Steam distillation is used for substances which are:",
+        opts: ["Soluble in water","Insoluble in water and volatile in steam","Non-volatile","Decompose on heating"],
+        correct: 1
+      },
+      // 9
+      {
+        q: "9. Paper chromatography separates components based on differences in:",
+        opts: ["Density","Solubility","Polarity","Molecular mass"],
+        correct: 2
+      },
+      // 10
+      {
+        q: "10. Lassaigne’s test for nitrogen gives a blue color due to formation of:",
+        opts: ["ferrocyanide","ferricyanide","sodium nitroprusside","Prussian blue"],
+        correct: 3
+      },
+      // 11
+      {
+        q: "11. Sodium fusion extract (Lassaigne test) for sulphur gives:",
+        opts: ["sodium sulphate","sodium sulphide","sodium thiosulphate","sodium thiocyanate"],
+        correct: 1
+      },
+      // 12
+      {
+        q: "12. Which reagent is used for detection of unsaturation?",
+        opts: ["FeCl₃","Bromine water","NaHCO₃","Tollen’s reagent"],
+        correct: 1
+      },
+      // 13
+      {
+        q: "13. A compound contains 40% C, 6.7% H and 53.3% O. Empirical formula is:",
+        opts: ["CHO","CH₂O","C₂H₄O₂","CH₃O"],
+        correct: 1
+      },
+      // 14
+      {
+        q: "14. If vapour density = 30, molecular mass = ?",
+        opts: ["15","30","45","60"],
+        correct: 3
+      },
+      // 15
+      {
+        q: "15. Tollen’s reagent gives a positive test with:",
+        opts: ["Ketones","Aldehydes","Esters","Aromatic hydrocarbons"],
+        correct: 1
+      },
+      // 16
+      {
+        q: "16. Lucas test is used to distinguish between:",
+        opts: ["Aldehydes & ketones","Alcohols","Acids","Alkanes"],
+        correct: 1
+      },
+      // 17
+      {
+        q: "17. Homolytic cleavage leads to formation of:",
+        opts: ["Carbocation","Carbanion","Free radicals","Carbonium ion"],
+        correct: 2
+      },
+      // 18
+      {
+        q: "18. Heterolytic cleavage gives:",
+        opts: ["Ions","Radicals","Neutral atoms","Atoms + free radicals"],
+        correct: 0
+      },
+      // 19
+      {
+        q: "19. –I effect is strongest in:",
+        opts: ["–NO₂","–Cl","–OH","–CH₃"],
+        correct: 0
+      },
+      // 20
+      {
+        q: "20. Resonance is shown by:",
+        opts: ["Ethane","Ethene","Benzene","Propane"],
+        correct: 2
+      },
+      // 21
+      {
+        q: "21. Hyperconjugation is maximum in:",
+        opts: ["Ethane","Propene","Propyl carbocation","tert-butyl carbocation"],
+        correct: 3
+      },
+      // 22
+      {
+        q: "22. Addition reactions are shown by:",
+        opts: ["Alkanes","Alkenes","Aryl halides","Benzene"],
+        correct: 1
+      },
+      // 23
+      {
+        q: "23. Substitution reaction is typical of:",
+        opts: ["Alkanes","Arenes","Alkynes","Alkenes"],
+        correct: 1
+      }
+    ];
+
+    // State
+    let score = 0;
+    let answered = 0;
+    const total = quizData.length;
+
+    // Build UI
+    const quizEl = document.getElementById('quiz');
+    function createQuestionBlock(item, idx){
+      const card = document.createElement('section');
+      card.className = 'card';
+      card.setAttribute('data-idx', idx);
+
+      const header = document.createElement('div');
+      header.className = 'q-header';
+      header.innerHTML = `
+        <div class="q-no">${idx+1}</div>
+        <div class="q-text">${item.q}</div>
+      `;
+      card.appendChild(header);
+
+      const opts = document.createElement('div');
+      opts.className = 'options';
+
+      item.opts.forEach((o, i) => {
+        const opt = document.createElement('div');
+        opt.className = 'opt';
+        opt.tabIndex = 0;
+        opt.setAttribute('role','button');
+        opt.setAttribute('data-choice', i);
+
+        opt.innerHTML = `
+          <div class="label">${String.fromCharCode(65+i)}</div>
+          <div class="txt">${o}</div>
+          <div class="tick" style="display:none"></div>
+        `;
+
+        // click handler
+        opt.addEventListener('click', () => handleSelect(card, idx, i));
+        opt.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelect(card, idx, i); }
+        });
+
+        opts.appendChild(opt);
+      });
+
+      card.appendChild(opts);
+      return card;
+    }
+
+    function handleSelect(card, qIdx, choiceIdx){
+      // if locked, ignore
+      if(card.classList.contains('locked')) return;
+
+      const correct = quizData[qIdx].correct;
+      const opts = card.querySelectorAll('.opt');
+
+      // Lock the question
+      card.classList.add('locked');
+
+      // mark options and show tick for selected
+      opts.forEach((el) => {
+        const ci = Number(el.getAttribute('data-choice'));
+        const tickEl = el.querySelector('.tick');
+        el.classList.add('locked');
+
+        if(ci === correct){
+          el.classList.add('correct');
+        }
+        if(ci === choiceIdx){
+          // this was user's pick
+          tickEl.style.display='inline-grid';
+          if(ci === correct){
+            tickEl.className = 'tick ok';
+            tickEl.textContent = '✓';
+            score += 1;
+          } else {
+            tickEl.className = 'tick no';
+            tickEl.textContent = '✕';
+            // also mark chosen wrong
+            el.classList.add('wrong');
+          }
+        }
+      });
+
+      answered += 1;
+      updateScoreUI();
+
+      // If all answered show final automatically
+      if(answered === total){
+        showFinal();
+      }
+    }
+
+    function updateScoreUI(){
+      document.getElementById('score').textContent = score;
+      document.getElementById('answered').textContent = answered;
+    }
+
+    // render all questions
+    quizData.forEach((it, idx) => {
+      quizEl.appendChild(createQuestionBlock(it, idx));
+    });
+
+    // Show final function
+    function showFinal(){
+      const final = document.getElementById('final');
+      final.style.display = 'block';
+      const percent = Math.round((score / total) * 100);
+      document.getElementById('final-text').textContent = `Final Score: ${score} / ${total}`;
+      document.getElementById('final-sub').textContent = `You scored ${percent}% — ${score} correct out of ${total}.`;
+      // scroll to final
+      final.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    // show answers button
+    document.getElementById('show-answers').addEventListener('click', () => {
+      // reveal correct answers visually without changing score or locking user's choices
+      document.querySelectorAll('.card').forEach((card) => {
+        const idx = Number(card.getAttribute('data-idx'));
+        const correct = quizData[idx].correct;
+        const opts = card.querySelectorAll('.opt');
+        opts.forEach(opt => {
+          const ci = Number(opt.getAttribute('data-choice'));
+          if(ci === correct){
+            opt.classList.add('correct');
+            // if not already showing a tick, show a small ✓ on correct
+            const tick = opt.querySelector('.tick');
+            if(tick && tick.style.display === 'none'){
+              tick.style.display='inline-grid';
+              tick.className='tick ok';
+              tick.textContent='✓';
+            }
+          }
+        });
+      });
+      // show final summary as well
+      showFinal();
+    });
+
+    // reset
+    document.getElementById('reset').addEventListener('click', () => {
+      if(!confirm('Reset quiz? Your current progress will be lost.')) return;
+      // reset state
+      score = 0;
+      answered = 0;
+      updateScoreUI();
+      document.getElementById('final').style.display='none';
+      // rebuild options UI
+      document.querySelectorAll('.card').forEach(card => {
+        card.classList.remove('locked');
+        const opts = card.querySelectorAll('.opt');
+        opts.forEach(opt => {
+          opt.className = 'opt';
+          opt.querySelector('.tick').style.display='none';
+        });
+      });
+      // scroll to top
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    // Accessibility: focus first option
+    setTimeout(()=> {
+      const firstOpt = document.querySelector('.opt');
+      if(firstOpt) firstOpt.focus();
+    },300);
+  </script>
+</body>
+</html>
