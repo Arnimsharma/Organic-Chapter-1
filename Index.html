@@ -1,76 +1,157 @@
 <!doctype html>
 <html lang="hi">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Quiz for Kajal ❤️ — With Shared Results (local)</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Quiz for Kajal ❤️ — NEET Organic Chemistry</title>
+
 <style>
-:root{--bg:#0f172a;--accent:#10b981;--muted:#94a3b8;--text:#e6eef8;--danger:#ef4444}
-*{box-sizing:border-box}body{margin:0;padding:24px;background:linear-gradient(180deg,#071026,#0f172a);color:var(--text);font-family:Inter,system-ui}
-.container{max-width:980px;margin:0 auto}
-header{text-align:center;margin-bottom:18px}
-header h1{color:var(--accent);margin:0}
-.small{color:var(--muted);font-size:13px}
-.section-title{font-size:18px;color:var(--accent);margin:18px 0 8px}
-.card{background:rgba(255,255,255,0.02);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.03)}
-.options{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-.opt{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+/* Same premium styling as before */
+:root{
+  --bg:#0f172a;
+  --card:#0b1220;
+  --accent:#10b981;
+  --muted:#94a3b8;
+  --text:#e6eef8;
+  --danger:#ef4444;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:24px;
+  background:linear-gradient(180deg,#071026,#0f172a);
+  color:var(--text);
+  font-family:Inter,system-ui;
+}
+.container{max-width:900px;margin:auto}
+
+header{
+  text-align:center;
+  margin-bottom:25px;
+}
+header h1{
+  margin:0;
+  font-size:28px;
+  color:#10b981;
+}
+header p{ color:var(--muted); margin:5px 0 0 0 }
+
+.section-title{
+  font-size:20px;
+  margin:25px 0 10px 0;
+  color:#10b981;
+  font-weight:700;
+}
+
+.card{
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.04);
+  border-radius:10px;
+  padding:18px;
+  margin-bottom:12px;
+  box-shadow:0 4px 14px #0003;
+}
+.q-no{
+  background:#12263f;
+  padding:5px 9px;
+  border-radius:8px;
+  color:var(--muted);
+  font-size:13px;
+  margin-right:8px;
+}
+.options{ margin-top:10px; display:flex; flex-direction:column; gap:8px }
+
+.opt{
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.03);
+  padding:10px;
+  border-radius:10px;
+  display:flex;align-items:center;
+  gap:12px;
+  cursor:pointer;
+  transition:.12s;
+}
 .opt:hover{transform:translateY(-3px)}
-.opt.locked{opacity:.6;cursor:default}
-.label{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:rgba(255,255,255,0.03)}
-.tick{width:26px;height:26px;display:none;place-items:center;border-radius:8px;font-weight:700}
+
+.opt.locked{opacity:.65;cursor:default}
+.opt.correct{
+  background:rgba(16,185,129,0.07);
+  border-color:rgba(16,185,129,0.25);
+}
+.opt.wrong{
+  background:rgba(239,68,68,0.07);
+  border-color:rgba(239,68,68,0.28);
+}
+.label{
+  width:26px;height:26px;display:grid;place-items:center;
+  background:rgba(255,255,255,0.03);
+  border-radius:8px;
+}
+.tick{
+  width:26px;height:26px;display:none;place-items:center;
+  border-radius:8px;font-weight:700;
+}
 .tick.ok{background:var(--accent);color:#012117}
 .tick.no{background:var(--danger);color:#fff}
-.footer{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);gap:12px}
-.btn{padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+
+.footer{
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.03);
+}
+.btn{
+  padding:10px 14px;border-radius:10px;
+  border:none;cursor:pointer;font-weight:700;
+}
 .btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.06)}
 .btn.main{background:var(--accent);color:#012117}
-.result{display:none;margin-top:14px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);text-align:center}
-.history{margin-top:12px}
-.history-item{padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.highlight{box-shadow:0 6px 18px rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.12)}
-.note{font-size:13px;color:var(--muted)}
-@media(max-width:640px){body{padding:12px}}
+
+.result{
+  display:none;
+  margin-top:20px;
+  padding:16px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.05);
+  text-align:center;
+}
 </style>
 </head>
 <body>
+
 <div class="container">
-  <header>
-    <h1>💚 Quiz for Kajal — Organic Chemistry (NEET)</h1>
-    <p class="small">Final results will be saved locally with date & time. To share results across devices/users, enable Firebase (instructions below).</p>
-  </header>
 
-  <div class="section-title">📘 Past NEET PYQs (23)</div>
-  <div id="quiz" class="card"></div>
+<header>
+  <h1>💚 Quiz for Kajal — Organic Chemistry (NEET)</h1>
+  <p>Each refresh: Question order changes automatically.</p>
+</header>
 
-  <div class="section-title">🔮 Expected Questions</div>
-  <div id="expected" class="card"></div>
+<!-- Section 1 PYQ -->
+<div class="section-title">📘 Past NEET PYQs (23 Questions)</div>
+<div id="quiz"></div>
 
-  <div class="footer">
-    <div>
-      <div class="small">Score: <b id="score">0</b> / <span id="total">0</span></div>
-      <div class="note">Answered: <span id="answered">0</span></div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn ghost" id="show-ans">Show Answers</button>
-      <button class="btn main" id="reset">Reset</button>
-    </div>
-  </div>
+<!-- Section 2 Expected -->
+<div class="section-title">🔮 Expected Questions (Most Likely for 2026)</div>
+<div id="expected"></div>
 
-  <div id="final" class="result" aria-live="polite"></div>
-
-  <div class="section-title">📜 Previous Final Results (Local)</div>
-  <div id="history" class="history card">
-    <div class="note">No previous submissions yet.</div>
-  </div>
-
-  <div style="margin-top:12px" class="small">
-    <b>Note:</b> Local saving means results are visible on the same browser/device. To show results to everyone who opens the link from anywhere, use the Firebase option (I can provide help).
+<div class="footer">
+  <div style="color:var(--muted)">Score: <span id="score">0</span></div>
+  <div>
+    <button class="btn ghost" id="show-ans">Show Answers</button>
+    <button class="btn main" id="reset">Reset</button>
   </div>
 </div>
 
+<div id="final" class="result"></div>
+
+</div>
+
 <script>
-/* ------------------ QUIZ DATA (PYQs + Expected) ------------------ */
+// -------------------- QUIZ DATA --------------------
+
 const pyqData = [
   { q:"The IUPAC name of CH₃–CH₂–CH(CH₃)–COOH is:", opts:["3-methylbutanoic acid","2-methylbutanoic acid","3-methylpentanoic acid","2-methylpentanoic acid"], correct:1 },
   { q:"The IUPAC name of CH₃–CH₂–O–CH₂–CH₃ is:", opts:["Ethyl methyl ether","Methoxyethane","Ethoxyethane","1-methoxypropane"], correct:2 },
@@ -97,6 +178,7 @@ const pyqData = [
   { q:"Substitution typical of:", opts:["Alkanes","Arenes","Alkynes","Alkenes"], correct:1 }
 ];
 
+// Expected Questions (10)
 const expectedData = [
   { q:"Which shows highest boiling point?", opts:["Pentane","2-methylbutane","Neopentane","Isobutane"], correct:0 },
   { q:"Hybridization of carbon in benzene:", opts:["sp3","sp2","sp","None"], correct:1 },
@@ -110,224 +192,86 @@ const expectedData = [
   { q:"pKa lowest for:", opts:["Acetic acid","Phenol","Water","Ethanol"], correct:0 }
 ];
 
-/* ------------------ UTILS ------------------ */
-function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } }
+// ------------------------ SHUFFLE FUNCTION ------------------------
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()* (i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+}
 
-/* shuffle each refresh */
+// Shuffle on each refresh
 shuffle(pyqData);
 shuffle(expectedData);
 
-/* ------------------ RENDER ------------------ */
-const quizEl = document.getElementById('quiz');
-const expEl = document.getElementById('expected');
-let score = 0;
-let answered = 0;
+// ------------------------ QUIZ ENGINE ------------------------
+let score=0;
 const total = pyqData.length + expectedData.length;
-document.getElementById('total').textContent = total;
 
-function makeCard(item, globalIdx){
-  const div = document.createElement('div');
-  div.className = 'card';
-  // use globalIdx for unique numbering
-  div.innerHTML = `<div><span class="label">${globalIdx+1}</span> ${item.q}</div><div class="options"></div>`;
-  const opts = div.querySelector('.options');
-  item.opts.forEach((o,i)=>{
-    const opt = document.createElement('div');
-    opt.className = 'opt';
-    opt.tabIndex = 0;
-    opt.innerHTML = `<div class="label">${String.fromCharCode(65+i)}</div><div style="flex:1">${o}</div><div class="tick"></div>`;
-    opt.addEventListener('click', ()=> handleSelect(div, item, i));
-    opt.addEventListener('keydown',(e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); handleSelect(div,item,i); }});
-    opts.appendChild(opt);
-  });
-  return div;
-}
+function renderSection(data, containerId){
+  const box=document.getElementById(containerId);
+  data.forEach((item,idx)=>{
+    const card=document.createElement("div");
+    card.className="card";
 
-function handleSelect(card, item, choiceIdx){
-  if(card.classList.contains('locked')) return;
-  card.classList.add('locked');
-  const opts = card.querySelectorAll('.opt');
-  opts.forEach((el, idx)=>{
-    const tick = el.querySelector('.tick');
-    if(idx === item.correct){
-      el.classList.add('correct');
-      if(tick.style.display === '' || tick.style.display === 'none'){
-        tick.style.display='grid'; tick.className='tick ok'; tick.textContent='✓';
-      }
-    }
-    if(idx === choiceIdx){
-      if(idx === item.correct){
-        score++;
-      } else {
-        el.classList.add('wrong');
-        tick.style.display='grid'; tick.className='tick no'; tick.textContent='✕';
-      }
-    }
-  });
-  answered++;
-  updateUI();
-  if(answered === total){
-    showFinalAndSave();
-  }
-}
+    card.innerHTML=`
+      <div><span class="q-no">${idx+1}</span>${item.q}</div>
+      <div class="options"></div>
+    `;
 
-function renderAll(){
-  quizEl.innerHTML=''; expEl.innerHTML='';
-  pyqData.forEach((it,i)=> quizEl.appendChild(makeCard(it,i)));
-  expectedData.forEach((it,i)=> expEl.appendChild(makeCard(it, pyqData.length + i)));
-}
-renderAll();
+    const opts=card.querySelector(".options");
 
-function updateUI(){
-  document.getElementById('score').textContent = score;
-  document.getElementById('answered').textContent = answered;
-}
+    item.opts.forEach((o,i)=>{
+      const opt=document.createElement("div");
+      opt.className="opt";
+      opt.innerHTML=`
+        <div class="label">${String.fromCharCode(65+i)}</div>
+        <div>${o}</div>
+        <div class="tick"></div>
+      `;
+      opt.addEventListener("click",()=>{
+        if(card.classList.contains("locked")) return;
 
-/* ------------------ FINAL & SAVE (localStorage) ------------------ */
-const STORAGE_KEY = 'kajal_quiz_submissions_v1';
+        card.classList.add("locked");
 
-function showFinalAndSave(){
-  const finalBox = document.getElementById('final');
-  const percent = Math.round((score/total)*100);
-  const now = new Date();
-  finalBox.style.display = 'block';
-  finalBox.innerHTML = `<h3>Final Score: ${score} / ${total} (${percent}%)</h3><div class="small">Submitted on: ${now.toLocaleString()}</div>`;
-  // Save to localStorage
-  saveSubmission({score, total, percent, time: now.toISOString()});
-  // refresh history UI
-  renderHistory();
-  // (Optional) scroll to history
-  finalBox.scrollIntoView({behavior:'smooth', block:'center'});
-}
+        if(i===item.correct){
+          opt.classList.add("correct");
+          opt.querySelector(".tick").style.display="grid";
+          opt.querySelector(".tick").className="tick ok";
+          opt.querySelector(".tick").textContent="✓";
+          score++;
+        } else {
+          opt.classList.add("wrong");
+          opt.querySelector(".tick").style.display="grid";
+          opt.querySelector(".tick").className="tick no";
+          opt.querySelector(".tick").textContent="✕";
+        }
 
-/* Save submission to localStorage array */
-function saveSubmission(record){
-  let arr = [];
-  try{
-    arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    arr.unshift(record); // newest first
-    // keep last 50
-    if(arr.length>50) arr = arr.slice(0,50);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-  }catch(e){
-    console.error('Storage error', e);
-  }
-}
-
-/* Render history from localStorage */
-function renderHistory(){
-  const box = document.getElementById('history');
-  box.innerHTML = '';
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(!raw){
-    box.innerHTML = '<div class="note">No previous submissions yet.</div>';
-    return;
-  }
-  let arr;
-  try{ arr = JSON.parse(raw); } catch(e){ arr = []; }
-  if(!arr || arr.length===0){ box.innerHTML = '<div class="note">No previous submissions yet.</div>'; return; }
-  arr.forEach((rec, idx)=>{
-    const d = new Date(rec.time);
-    const el = document.createElement('div');
-    el.className = 'history-item' + (idx===0 ? ' highlight' : '');
-    el.innerHTML = `<div><b>${rec.score}/${rec.total}</b> — ${rec.percent}%</div><div class="small">${d.toLocaleString()}</div>`;
-    box.appendChild(el);
-  });
-}
-
-/* Initial render of history */
-renderHistory();
-
-/* ------------------ SHOW ANSWERS & RESET ------------------ */
-document.getElementById('show-ans').addEventListener('click', ()=>{
-  // reveal correct answers in all cards (without locking)
-  document.querySelectorAll('.card').forEach((card,ci)=>{
-    const opts = card.querySelectorAll('.opt');
-    opts.forEach((opt, idx)=>{
-      // find if correct by comparing text — tricky; better derive index from global ordering:
-      // We can check by position mapping: global index = order in DOM
-      // We'll compute global index:
-      // But here simpler: highlight any option that has a check already (correct class) or set correct for all based on data arrays:
+        document.getElementById("score").textContent=score;
+      });
+      opts.appendChild(opt);
     });
+
+    box.appendChild(card);
   });
-  // To do properly, re-walk pyqData + expectedData and mark correct ones:
-  const allData = pyqData.concat(expectedData);
-  document.querySelectorAll('.card').forEach((card, ci)=>{
-    const correctIdx = allData[ci].correct;
-    const optionEls = card.querySelectorAll('.opt');
-    const tick = optionEls[correctIdx].querySelector('.tick');
-    optionEls[correctIdx].classList.add('correct');
-    if(tick.style.display === '' || tick.style.display === 'none'){
-      tick.style.display='grid'; tick.className='tick ok'; tick.textContent='✓';
-    }
-  });
-  // show final summary box too
-  const finalBox = document.getElementById('final');
-  finalBox.style.display = 'block';
-  finalBox.innerHTML = `<h3>Current Score: ${score} / ${total}</h3><div class="small">This does not change saved submissions unless you answered all and submission saved automatically.</div>`;
-});
-
-document.getElementById('reset').addEventListener('click', ()=>{
-  if(!confirm('Reset quiz (page will reload)?')) return;
-  // simple reload -> shuffle on refresh
-  location.reload();
-});
-
-/* ------------------ OPTIONAL: Clear history button (developer use) ------------------ */
-/* Uncomment to expose a clear-history control:
-const clearBtn = document.createElement('button');
-clearBtn.textContent='Clear History';
-clearBtn.className='btn ghost';
-clearBtn.onclick=()=>{ if(confirm('Clear local history?')){ localStorage.removeItem(STORAGE_KEY); renderHistory(); } };
-document.querySelector('.container').appendChild(clearBtn);
-*/
-
-/* ------------------ OPTIONAL: Firebase template (for global sharing) ------------------
-To share results across all users, do this:
-1. Create a Firebase project -> Realtime Database OR Firestore.
-2. In project settings get web config (apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId).
-3. Include Firebase scripts and initialize below with your config.
-4. Use push() (realtime DB) or add() (firestore) to save submissions.
-
-Example (Realtime DB) skeleton:
-
-// 1) add scripts in <head> before this script runs:
-// <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-// <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-// 2) initialize:
-const firebaseConfig = {
-  apiKey: "API_KEY",
-  authDomain: "PROJECT.firebaseapp.com",
-  databaseURL: "https://PROJECT.firebaseio.com",
-  projectId: "PROJECT",
-  storageBucket: "PROJECT.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// 3) save submission globally:
-function saveSubmissionGlobal(record){
-  // push under 'kajal_quiz_submissions' node
-  db.ref('kajal_quiz_submissions').push(record)
-    .then(()=> console.log('saved to firebase'))
-    .catch(e=>console.error(e));
 }
 
-// 4) read recent submissions and render:
-db.ref('kajal_quiz_submissions').limitToLast(50).on('value', snapshot=>{
-  const val = snapshot.val(); // object of entries
-  // convert and render in history area
-});
+// Render both sections
+renderSection(pyqData,"quiz");
+renderSection(expectedData,"expected");
 
-If you want, I can:
-- Provide the exact Firebase-full code with realtime listeners and UI integration (so *everyone* who opens the link sees the same submissions live).
-- Or I can set up a simple Google Sheet webhook approach.
+// ------------------------ BUTTONS ------------------------
+document.getElementById("show-ans").onclick=()=>{
+  document.querySelectorAll(".card").forEach((card,ci)=>{
+    const idx = ci < pyqData.length ? ci : ci - pyqData.length;
+  });
+  document.getElementById("final").style.display="block";
+  document.getElementById("final").innerHTML=
+    `<h2>Final Score: ${score} / ${total}</h2>`;
+}
 
-Just tell me which option: "Firebase" or "Local only" or "Google Sheets" — I'll provide the complete code & step-by-step.
------------------------------------------------------------------- */
+document.getElementById("reset").onclick=()=>location.reload();
 </script>
+
 </body>
 </html>
