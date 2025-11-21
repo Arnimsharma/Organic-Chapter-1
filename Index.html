@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz for Kajal ❤️ — Breathing & Exchange of Gases (PYQs)</title>
+  <style>
+    :root{
+      --bg: #0f172a;
+      --card: #0b1220;
+      --accent: #10b981;
+      --muted: #94a3b8;
+      --text: #e6eef8;
+      --danger: #ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: linear-gradient(180deg,#071026 0%, #0f172a 100%);
+      color:var(--text);
+      padding:20px;
+    }
+    .container{ max-width:980px; margin:0 auto; }
+    header{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+    header h1{ margin:0; font-size:20px; color:var(--accent) }
+    header p{ margin:0; color:var(--muted); font-size:13px }
+    .card{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:16px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.03); }
+    .q-header{ display:flex; align-items:center; gap:10px; }
+    .q-no{ background:#071833; color:var(--muted); padding:6px 9px; border-radius:7px; font-weight:700; font-size:13px; min-width:44px; text-align:center; }
+    .q-text{ font-size:15px }
+    .options{ display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+    .opt{ display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.02); cursor:pointer; transition:all .12s; user-select:none; }
+    .opt:hover{ transform:translateY(-3px) }
+    .opt.locked{ opacity:0.65; cursor:default; transform:none; box-shadow:none; }
+    .label{ width:26px; height:26px; min-width:26px; border-radius:8px; display:inline-grid; place-items:center; background:rgba(255,255,255,0.03); color:var(--muted); font-weight:700; }
+    .txt{ flex:1; color:var(--text); font-size:14px }
+    .opt.correct{ border-color:rgba(16,185,129,0.25); background:linear-gradient(90deg, rgba(16,185,129,0.06), rgba(16,185,129,0.02)); }
+    .opt.wrong{ border-color:rgba(239,68,68,0.16); background:linear-gradient(90deg, rgba(239,68,68,0.03), rgba(239,68,68,0.01)); }
+    .tick{ width:28px; height:28px; border-radius:8px; display:inline-grid; place-items:center; font-weight:700; font-size:14px; display:none; }
+    .tick.ok{ background:var(--accent); color:#012117; }
+    .tick.no{ background:var(--danger); color:#fff; }
+    .footer{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; }
+    .scorebox{ padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); display:flex; gap:12px; align-items:center; }
+    .btn{ padding:10px 12px; border-radius:10px; background:var(--accent); color:#012117; font-weight:700; border:none; cursor:pointer; }
+    .btn.ghost{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); }
+    .result{ text-align:center; margin-top:18px; padding:12px; border-radius:10px; background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); display:none; }
+    .small{ font-size:13px; color:var(--muted) }
+    @media (max-width:640px){ header{ flex-direction:column; align-items:flex-start } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>💚 Quiz for Kajal — Breathing & Exchange of Gases (PYQs)</h1>
+        <p class="small">Questions shuffled every refresh. Select correct option to gain +1.</p>
+      </div>
+      <div class="scorebox">
+        <div class="small">Score:</div>
+        <div id="score" style="font-weight:800; min-width:28px; text-align:center">0</div>
+        <div class="small">/ 33</div>
+      </div>
+    </header>
+
+    <main id="quiz"></main>
+
+    <div class="card footer" style="align-items:center;">
+      <div class="small">Questions answered: <span id="answered">0</span> / 33</div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button class="btn ghost" id="show-answers">Show Correct Answers</button>
+        <button class="btn" id="reset">Reset Quiz</button>
+      </div>
+    </div>
+
+    <div id="final" class="result" aria-live="polite">
+      <h2 id="final-text">Final Score</h2>
+      <p class="small" id="final-sub"></p>
+    </div>
+  </div>
+
+  <script>
+    // Questions: Breathing & Exchange of Gases (NEET/AIPMT PYQ-style, recreated & paraphrased)
+    // Total: 33 questions (sourced & cross-checked from PYQ collections). Sources: Examside, StudyAdda, Byjus, eSaral. 1
+    const quizData = [
+      { q: "1. Exchange of gases in the alveoli of the lungs takes place by:", opts:["Osmosis","Simple diffusion","Active transport","Facilitated diffusion"], correct:1 },
+      { q: "2. Lungs do not collapse completely because of the presence of:", opts:["Tidal volume","Residual volume","Expiratory reserve volume","Inspiratory reserve volume"], correct:1 },
+      { q: "3. Which one is NOT a part of the conduction zone of human respiratory system?", opts:["Trachea","Bronchioles (terminal)","Alveoli","Primary bronchi"], correct:2 },
+      { q: "4. The main respiratory pigment in human blood is:", opts:["Myoglobin","Haemocyanin","Haemoglobin","Chlorocruorin"], correct:2 },
+      { q: "5. Oxygen is transported in blood mostly as:", opts:["Dissolved O2 in plasma","Combined with haemoglobin","Bicarbonate ion","Carbamino compounds"], correct:1 },
+      { q: "6. CO2 is transported in blood mainly as:", opts:["Combined with Hb","Dissolved CO2","Bicarbonate ions (HCO3−)","Carbamino compounds"], correct:2 },
+      { q: "7. The functional unit of lung where gas exchange occurs is:", opts:["Alveolus","Bronchiole","Trachea","Pleura"], correct:0 },
+      { q: "8. Which of the following contributes to the negative pressure in pleural cavity?", opts:["Surface tension of water in alveoli","Elastic recoil of lungs and chest","Muscular contraction of diaphragm","Atmospheric pressure"], correct:1 },
+      { q: "9. The diaphragm is innervated by:", opts:["Vagus nerve","Phrenic nerve","Intercostal nerve","Glossopharyngeal nerve"], correct:1 },
+      { q: "10. The oxygen-hemoglobin dissociation curve shifts to the right when:", opts:["pO2 increases","pH increases","Temperature increases","CO concentration increases"], correct:2 },
+      { q: "11. Which volume cannot be measured by simple spirometry?", opts:["Tidal volume","Residual volume","Inspiratory reserve volume","Expiratory reserve volume"], correct:1 },
+      { q: "12. During heavy exercise, which of the following increases most significantly?", opts:["Tidal volume","Residual volume","Residual capacity","Dead space"], correct:0 },
+      { q: "13. In human lungs, surfactant is secreted by:", opts:["Type I pneumocytes","Type II pneumocytes","Goblet cells","Alveolar macrophages"], correct:1 },
+      { q: "14. If atmospheric PO2 is 160 mmHg, and alveolar PO2 is about 100 mmHg, then the main reason is:", opts:["Water vapour dilution and CO2 presence","Less O2 in atmosphere","Low haemoglobin","Low breathing rate"], correct:0 },
+      { q: "15. The primary stimulus for increased ventilation is:", opts:["Low O2 in blood","High CO2 (hypercapnia) and pH changes","High body temperature","Low blood pressure"], correct:1 },
+      { q: "16. Which receptors detect change in blood pH and CO2?", opts:["Baroreceptors","Chemoreceptors in medulla and carotid bodies","Stretch receptors","Photoreceptors"], correct:1 },
+      { q: "17. Which properly describes pulmonary ventilation during inspiration?", opts:["Diaphragm relaxes and ribs move in","Diaphragm contracts and ribs move out","Pleural pressure increases","Lung volume decreases"], correct:1 },
+      { q: "18. The chloride shift in RBCs occurs to:", opts:["Maintain electrical neutrality when HCO3− leaves RBC","Facilitate O2 loading","Transport CO2 as carbamino compounds","Prevent haemolysis"], correct:0 },
+      { q: "19. Fick's law of diffusion depends on all EXCEPT:", opts:["Surface area","Thickness of membrane","Partial pressure difference","Temperature only"], correct:3 },
+      { q: "20. Which of the following statements about tidal volume (TV) is true?", opts:["TV is the volume exhaled in maximum expiration","TV increases greatly at rest","TV is small volume inhaled or exhaled in normal breathing","TV equals vital capacity"], correct:2 },
+      { q: "21. Which is the major cause of hypoxia at high altitudes?", opts:["Reduced atmospheric pressure leading to lower pO2","Increased CO2","Increased humidity","Higher O2 percentage"], correct:0 },
+      { q: "22. In foetal blood, O2 affinity of haemoglobin is higher due to:", opts:["Presence of fetal haemoglobin (HbF) with less affinity for 2,3-BPG","Higher temperature","Higher CO2","Lower pH"], correct:0 },
+      { q: "23. The process by which oxygen is released from oxyhaemoglobin is influenced by:", opts:["Partial pressure of oxygen only","Partial pressure of oxygen, pH and temperature","Only pH","Only bicarbonate"], correct:1 },
+      { q: "24. Which one of the following is NOT a function of nasal cavity?", opts:["Warming and humidifying inhaled air","Filtering dust particles","Exchange of gases with blood","Olfaction"], correct:2 },
+      { q: "25. Respiratory distress syndrome in newborn is due to deficiency of:", opts:["Alveolar macrophages","Type I pneumocytes","Surfactant","Hemoglobin"], correct:2 },
+      { q: "26. Which structure prevents food from entering the trachea during swallowing?", opts:["Epiglottis","Glottis","Larynx","Uvula"], correct:0 },
+      { q: "27. Which of the following is TRUE about pleural fluid?", opts:["It increases friction between lungs and chest wall","It prevents friction and facilitates smooth movement","It actively pumps air","It is absent in healthy individuals"], correct:1 },
+      { q: "28. The mechanism of gas exchange across alveolar membrane is:", opts:["Active transport","Osmosis","Simple diffusion down partial pressure gradients","Endocytosis"], correct:2 },
+      { q: "29. 2,3-BPG (2,3-diphosphoglycerate) in RBCs causes:", opts:["Left shift of O2-Hb curve (increased affinity)","Reduced O2 release to tissues (higher affinity)","Right shift of O2-Hb curve (reduced affinity) promoting O2 release","No effect on oxygen binding"], correct:2 },
+      { q: "30. Which of the following increases during emphysema?", opts:["Alveolar surface area","Elastic recoil of lungs","Residual volume","Number of alveoli"], correct:2 },
+      { q: "31. The total lung capacity (TLC) equals:", opts:["TV + IRV","VC + RV (vital capacity + residual volume)","ERV + TV","Tidal volume alone"], correct:1 },
+      { q: "32. Which gas transport form predominates for CO2 in blood returning to lungs?", opts:["Carbaminohaemoglobin","Dissolved CO2","Bicarbonate ion in plasma","Bound to plasma proteins"], correct:2 },
+      { q: "33. Which of the following is the best description of vital capacity (VC)?", opts:["Maximum air that can be inspired after a normal inspiration","Maximum air that can be expelled after a normal inspiration","Maximum air that can be inspired after a maximal expiration (sum of TV+IRV+ERV)","Residual air left in lungs after expiration"], correct:2 }
+    ];
+
+    // Shuffle questions each refresh
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+    shuffle(quizData);
+
+    // State
+    let score = 0;
+    let answered = 0;
+    const total = quizData.length;
+
+    // Build UI
+    const quizEl = document.getElementById('quiz');
+    function createQuestionBlock(item, idx){
+      const card = document.createElement('section');
+      card.className = 'card';
+      card.setAttribute('data-idx', idx);
+
+      const header = document.createElement('div');
+      header.className = 'q-header';
+      header.innerHTML = `
+        <div class="q-no">${idx+1}</div>
+        <div class="q-text">${item.q}</div>
+      `;
+      card.appendChild(header);
+
+      const opts = document.createElement('div');
+      opts.className = 'options';
+
+      item.opts.forEach((o, i) => {
+        const opt = document.createElement('div');
+        opt.className = 'opt';
+        opt.tabIndex = 0;
+        opt.setAttribute('role','button');
+        opt.setAttribute('data-choice', i);
+
+        opt.innerHTML = `
+          <div class="label">${String.fromCharCode(65+i)}</div>
+          <div class="txt">${o}</div>
+          <div class="tick" style="display:none"></div>
+        `;
+
+        // click handler
+        opt.addEventListener('click', () => handleSelect(card, idx, i));
+        opt.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelect(card, idx, i); }
+        });
+
+        opts.appendChild(opt);
+      });
+
+      card.appendChild(opts);
+      return card;
+    }
+
+    function handleSelect(card, qIdx, choiceIdx){
+      if(card.classList.contains('locked')) return;
+      const correct = quizData[qIdx].correct;
+      const opts = card.querySelectorAll('.opt');
+
+      card.classList.add('locked');
+
+      opts.forEach((el) => {
+        const ci = Number(el.getAttribute('data-choice'));
+        const tickEl = el.querySelector('.tick');
+        el.classList.add('locked');
+
+        if(ci === correct){
+          el.classList.add('correct');
+        }
+        if(ci === choiceIdx){
+          tickEl.style.display='inline-grid';
+          if(ci === correct){
+            tickEl.className = 'tick ok';
+            tickEl.textContent = '✓';
+            score += 1;
+          } else {
+            tickEl.className = 'tick no';
+            tickEl.textContent = '✕';
+            el.classList.add('wrong');
+          }
+        }
+      });
+
+      answered += 1;
+      updateScoreUI();
+
+      if(answered === total){
+        showFinal();
+      }
+    }
+
+    function updateScoreUI(){
+      document.getElementById('score').textContent = score;
+      document.getElementById('answered').textContent = answered;
+    }
+
+    // render all questions
+    quizData.forEach((it, idx) => {
+      quizEl.appendChild(createQuestionBlock(it, idx));
+    });
+
+    // Show final function
+    function showFinal(){
+      const final = document.getElementById('final');
+      final.style.display = 'block';
+      const percent = Math.round((score / total) * 100);
+      document.getElementById('final-text').textContent = `Final Score: ${score} / ${total}`;
+      document.getElementById('final-sub').textContent = `You scored ${percent}% — ${score} correct out of ${total}.`;
+      final.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    // show answers button
+    document.getElementById('show-answers').addEventListener('click', () => {
+      quizData.forEach((q, idx) => {
+        const card = document.querySelector(`section[data-idx="${idx}"]`);
+        if(!card) return;
+        const correct = q.correct;
+        const opts = card.querySelectorAll('.opt');
+        opts.forEach(opt => {
+          const ci = Number(opt.getAttribute('data-choice'));
+          if(ci === correct){
+            opt.classList.add('correct');
+            const tick = opt.querySelector('.tick');
+            if(tick && tick.style.display === 'none'){
+              tick.style.display='inline-grid';
+              tick.className='tick ok';
+              tick.textContent='✓';
+            }
+          }
+        });
+      });
+      showFinal();
+    });
+
+    // reset
+    document.getElementById('reset').addEventListener('click', () => {
+      if(!confirm('Reset quiz? Your current progress will be lost.')) return;
+      location.reload();
+    });
+
+    // focus accessibility
+    setTimeout(()=> {
+      const firstOpt = document.querySelector('.opt');
+      if(firstOpt) firstOpt.focus();
+    },300);
+  </script>
+</body>
+</html>
